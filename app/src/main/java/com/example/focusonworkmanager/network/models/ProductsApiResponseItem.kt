@@ -1,6 +1,6 @@
-package network.models
+package com.example.focusonworkmanager.network.models
 
-data class ApiResponseItem(
+data class ProductsApiResponseItem(
     val category: String,
     val description: String,
     val id: Int,

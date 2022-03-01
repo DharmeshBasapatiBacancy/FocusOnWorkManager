@@ -1,4 +1,4 @@
-package network.models
+package com.example.focusonworkmanager.network.models
 
 data class UsersApiResponseItem(
     val __v: Int,

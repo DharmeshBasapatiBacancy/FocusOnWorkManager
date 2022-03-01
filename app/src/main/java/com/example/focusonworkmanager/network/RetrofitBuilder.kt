@@ -1,4 +1,4 @@
-package network
+package com.example.focusonworkmanager.network
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

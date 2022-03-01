@@ -1,4 +1,4 @@
-package network.models
+package com.example.focusonworkmanager.network.models
 
 data class Address(
     val city: String,
