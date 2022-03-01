@@ -4,6 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.*
+import com.example.focusonworkmanager.api_workers.GetProductsWorker
+import com.example.focusonworkmanager.api_workers.GetUsersWorker
+import com.example.focusonworkmanager.chain_workers.CreateAccountWorker
+import com.example.focusonworkmanager.chain_workers.ExploreProductsWorker
+import com.example.focusonworkmanager.chain_workers.LoginWorker
+import com.example.focusonworkmanager.chain_workers.UpdateProfileWorker
 import com.example.focusonworkmanager.databinding.ActivityMainBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -25,6 +31,87 @@ class MainActivity : AppCompatActivity() {
             startTimeLoggerWork()
         }
 
+        binding.btnStartChainWork.setOnClickListener {
+            startChainWork()
+        }
+
+        binding.btnStartApiWork.setOnClickListener {
+            startApiWork()
+        }
+    }
+
+    private fun startApiWork() {
+
+        val getProductsWorkRequest = OneTimeWorkRequestBuilder<GetProductsWorker>()
+            .addTag("GetProductsWorker").build()
+
+        val getUsersWorkRequest = OneTimeWorkRequestBuilder<GetUsersWorker>()
+            .addTag("GetUsersWorker").build()
+
+        WorkManager.getInstance(this)
+            .beginWith(getProductsWorkRequest)
+            .then(getUsersWorkRequest)
+            .enqueue()
+
+        WorkManager.getInstance(this)
+            .getWorkInfoByIdLiveData(getProductsWorkRequest.id)
+            .observe(this) {
+                Log.d(TAG, "getProductsWorkRequest: ${it?.state}")
+            }
+
+        WorkManager.getInstance(this)
+            .getWorkInfoByIdLiveData(getUsersWorkRequest.id)
+            .observe(this) {
+                Log.d(TAG, "getUsersWorkRequest: ${it?.state}")
+            }
+
+    }
+
+    private fun startChainWork() {
+
+        val createAccountRequest = OneTimeWorkRequestBuilder<CreateAccountWorker>()
+            .addTag("CreateAccountWorker")
+            .build()
+
+        val loginRequest = OneTimeWorkRequestBuilder<LoginWorker>()
+            .addTag("LoginWorker")
+            .build()
+
+        val updateProfileRequest = OneTimeWorkRequestBuilder<UpdateProfileWorker>()
+            .addTag("UpdateProfileWorker")
+            .build()
+
+        val exploreProductsRequest = OneTimeWorkRequestBuilder<ExploreProductsWorker>()
+            .addTag("ExploreProductsWorker")
+            .build()
+
+        val workManager = WorkManager.getInstance(this)
+
+        /*workManager.beginWith(createAccountRequest)
+            .then(loginRequest)
+            .then(updateProfileRequest)
+            .then(exploreProductsRequest)
+            .enqueue()*/
+
+        workManager.beginWith(listOf(createAccountRequest, loginRequest))
+            .then(updateProfileRequest)
+            .then(exploreProductsRequest)
+            .enqueue()
+
+        observeChainWorkers(createAccountRequest.id)
+        observeChainWorkers(loginRequest.id)
+        observeChainWorkers(updateProfileRequest.id)
+        observeChainWorkers(exploreProductsRequest.id)
+
+    }
+
+    private fun observeChainWorkers(workerId: UUID) {
+        val workStatus = WorkManager.getInstance(this)
+            .getWorkInfoByIdLiveData(workerId)
+        workStatus.observe(this) {
+            Log.d(TAG, "observeChainWorkers: ${it?.tags}")
+            Log.d(TAG, "observeChainWorkers: ${it?.state}")
+        }
     }
 
     private fun startTimeLoggerWork() {

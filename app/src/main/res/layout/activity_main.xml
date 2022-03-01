@@ -25,4 +25,22 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnStartWork" />
 
+    <Button
+        android:id="@+id/btnStartChainWork"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Chain Work!"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnStartTimeLoggerWork" />
+
+    <Button
+        android:id="@+id/btnStartApiWork"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start API Work!"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnStartChainWork" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
